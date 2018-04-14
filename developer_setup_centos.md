@@ -82,6 +82,25 @@ tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN      
 [me@centos7 manageiq]$
 ```
 
+* Make postgres acept connection from all hosts.
+
+```bash
+cd /var/opt/rh/rh-postgresql94/lib/pgsql/data/
+
+[root@centos7 data]# egrep -v '^#|^$'  pg_hba.conf                                          |
+host    all             all             0.0.0.0/0               md5 
+[root@centos7 data]#         
+
+```
+* Make postgres acept connection from all hosts
+
+```bash
+cd /var/opt/rh/rh-postgresql94/lib/pgsql/data/
+egrep -v '^#|^$'  postgresql.conf | egrep '^listen_address'
+# we should see folloing
+listen_addresses = '*'    # what IP address(es) to listen on; 
+```
+
 * Use pgadmin4 to get a GUI with our PG db.
 
 ### Install Ruby and Bundler
@@ -253,7 +272,8 @@ bin/update                # Updates dependencies using bundler and bower, runs m
 
 For provider, UI or other plugin development, see [the guide on that topic](developer_setup/plugins.md).
 
-#### Some troubleshooting notes
+
+# Some troubleshooting notes
 
 * First login fails
 
@@ -266,10 +286,6 @@ If this happens check the log for
 `ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime` a few lines down.
 When this message is present, then the you need to install `node.js` and re-try
 
-* `bin/setup` fails while trying to install the 'nokogiri' gem
-
-If this happens, you may be missing developer tools in your OS X. Try to install them with
-`xcode-select --install` and re-try.
 
 * `bin/setup` fails to install the 'sys-proctable' gem, or installs the wrong version.
 
@@ -283,20 +299,22 @@ and re-try.
 bundle install --path vendor/bundle
 ```
 
-
 * Can't install `sys-proctable` on a Mac - a package missing even after bundle install succeeded
 
 ```
 bundle config specific_platform true
 bundle install
 ```
+
 * FATAL:  database "vmdb_development" does not exist
 
 ```
-centos7 manageiq]$ bundle exec rake evm:start
+me@centos7 manageiq]$ bundle exec rake evm:start
 ** Using session_store: ActionDispatch::Session::MemCacheStore
 Starting EVM...
 rake aborted!
 ActiveRecord::NoDatabaseError: FATAL:  database "vmdb_development" does not exist
+<snipped>
+me@centos7 manageiq]$ 
 
 ```
