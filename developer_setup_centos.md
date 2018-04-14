@@ -61,15 +61,28 @@
       to install it from the PostgreSQL Global Development Group repositories.
 
   ```bash
-  
+
   sudo postgresql-setup initdb
-  sudo grep -q '^local\s' /var/lib/pgsql/data/pg_hba.conf || echo "local all all trust" | sudo tee -a /var/lib/pgsql/data/pg_hba.conf
-  sudo sed -i.bak 's/\(^local\s*\w*\s*\w*\s*\)\(peer$\)/\1trust/' /var/lib/pgsql/data/pg_hba.conf
+  sudo grep -q '^local\s' /var/opt/rh/rh-postgresql94/lib/pgsql/data/pg_hba.conf || echo "local all all trust" | sudo tee -a /var/opt/rh/rh-postgresql94/lib/pgsql/data/pg_hba.conf
+  sudo sed -i.bak 's/\(^local\s*\w*\s*\w*\s*\)\(peer$\)/\1trust/' /var/opt/rh/rh-postgresql94/lib/pgsql/data/pg_hba.conf
   sudo systemctl enable postgresql
   sudo systemctl start postgresql
   sudo -u postgres psql -c "CREATE ROLE root SUPERUSER LOGIN PASSWORD 'smartvm'"
   # This command can return with a "could not change directory to" error, but you can ignore it
   ```
+
+* check the status
+
+we see it is only avaible to from local host connection.
+
+```bash
+[me@centos7 manageiq]$ sudo netstat -antulp |grep 5432
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN      23867/postgres
+[me@centos7 manageiq]$
+```
+
+* Use pgadmin4 to get a GUI with our PG db.
 
 ### Install Ruby and Bundler
 
@@ -79,6 +92,38 @@
   ruby-2.0.0.648-33.el7_4.x86_64
   [root@centos7 ~]#
   ```
+
+* Remove older version of ruby
+  ```bash
+  [root@centos7 ~]# yum remove -y ruby-\* rubygem* && rpm -qa |grep ruby
+  Loaded plugins: fastestmirror
+  No Match for argument: ruby-*
+  No Match for argument: rubygem*
+  No Packages marked for removal
+  [root@centos7 ~]#
+  ```
+* Install a newer version ruby from SCL
+
+```bash
+yum --enablerepo=centos-sclo-rh -y install rh-ruby24\*
+scl enable rh-ruby24 bash
+[root@centos7 ~]# ruby --version
+ruby 2.4.0p0 (2016-12-24 revision 57164) [x86_64-linux]
+[root@centos7 ~]#
+[root@dlp ~]# vi /etc/profile.d/rh-ruby24.sh
+# create new
+ #!/bin/bash
+
+source /opt/rh/rh-ruby24/enable
+export X_SCLS="`scl enable rh-ruby24 'echo $X_SCLS'`"
+
+```
+
+* build and install pg gem with ruby 2.4 and /opt/rh/rh-postgresql94 from SCL
+
+```bash
+gem install pg -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_config
+```
 * Use a Ruby version manager (choose one)
   * [chruby](https://github.com/postmodern/chruby) and [ruby-install](https://github.com/postmodern/ruby-install)
   * [rvm](http://rvm.io/)
@@ -121,12 +166,22 @@
   git config user.email joe.smith@example.com
   ```
 
-### Clone the Code
+### Clone the Code using git protocol if you are in manageiq team
 
 ```bash
 git clone git@github.com:JoeSmith/manageiq.git # Use "-o my_fork" if you don't want the remote to be named origin
 cd manageiq
 git remote add upstream git@github.com:ManageIQ/manageiq.git
+git fetch upstream
+```
+
+
+### Clone the Code in https readonly mode
+
+```bash
+git clone git@github.com:LearningManageIQ/manageiq.git # Use "-o my_fork" if you don't want the remote to be named origin
+cd  cd manageiq
+git remote add upstream https://github.com/ManageIQ/manageiq.git
 git fetch upstream
 ```
 
@@ -146,10 +201,16 @@ git fetch other_user
   If you do get these errors and you don't want to use sudo,
   [you can configure npm to install packages globally for a given user](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md).
 
+* make sure your account can sudo without password
+  ```bash
+  /etc/group
+  /etc/sudoer
+  adm 
+  ```
 * Install the _Bower_ package manager
 
   ```bash
-  npm install -g bower
+  sudo npm install -g bower
   ```
 
 * Install the _Yarn_ package manager
@@ -157,20 +218,21 @@ git fetch other_user
   Follow [official instructions](https://yarnpkg.com/lang/en/docs/install/#linux-tab) or
 
   ```bash
-  npm install -g yarn
+  sudo npm install -g yarn
   ```
 
 * Install the _Gulp_ and _Webpack_ build system
 
   ```bash
-  npm install -g gulp-cli
-  npm install -g webpack
+  sudo npm install -g gulp-cli &&  sudo npm install -g webpack
   ```
 
 ### Get the Rails environment up and running
 
 ```bash
 bin/setup                  # Installs dependencies, config, prepares database, etc
+gem install pg -v '0.18.4' -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_config
+bundle install 
 bundle exec rake evm:start # Starts the ManageIQ EVM Application in the background
 ```
 
@@ -228,4 +290,13 @@ bundle install --path vendor/bundle
 bundle config specific_platform true
 bundle install
 ```
+* FATAL:  database "vmdb_development" does not exist
 
+```
+centos7 manageiq]$ bundle exec rake evm:start
+** Using session_store: ActionDispatch::Session::MemCacheStore
+Starting EVM...
+rake aborted!
+ActiveRecord::NoDatabaseError: FATAL:  database "vmdb_development" does not exist
+
+```
