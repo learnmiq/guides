@@ -226,13 +226,13 @@ git fetch other_user
   /etc/sudoer
   adm 
   ```
-* Install the _Bower_ package manager
+* Install the [_Bower_](https://bower.io/) package manager
 
   ```
   sudo npm install -g bower
   ```
 
-* Install the _Yarn_ package manager
+* Install the [_Yarn_](https://yarnpkg.com/en/) package manager
 
   Follow [official instructions](https://yarnpkg.com/lang/en/docs/install/#linux-tab) or
 
@@ -240,7 +240,7 @@ git fetch other_user
   sudo npm install -g yarn
   ```
 
-* Install the _Gulp_ and _Webpack_ build system
+* Install the _Gulp_(https://gulpjs.com/) and [_Webpack_](https://webpack.github.io/) build system
 
   ```
   sudo npm install -g gulp-cli &&  sudo npm install -g webpack
