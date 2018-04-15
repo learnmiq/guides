@@ -101,7 +101,7 @@ egrep -v '^#|^$'  postgresql.conf | egrep '^listen_address'
 listen_addresses = '*'    # what IP address(es) to listen on; 
 ```
 
-* Use pgadmin4 to get a GUI with our PG db.
+* Use [_pgAdmin_ 4](https://www.pgadmin.org/) to get a GUI connection with  PG db.
 
 ### Install Ruby and Bundler
 
@@ -240,7 +240,7 @@ git fetch other_user
   sudo npm install -g yarn
   ```
 
-* Install the _Gulp_(https://gulpjs.com/) and [_Webpack_](https://webpack.github.io/) build system
+* Install the [_Gulp_](https://gulpjs.com/) and [_Webpack_](https://webpack.github.io/) build system
 
   ```
   sudo npm install -g gulp-cli &&  sudo npm install -g webpack
