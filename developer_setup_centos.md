@@ -7,7 +7,7 @@
 * Install CentOS 7 mimimum.
 
   * update and reboot.
-  ```bash
+  ```
   [root@centos7 ~]# yum update -y && reboot
   <snipped>
     Replaced:
@@ -22,7 +22,7 @@
   ```  
 
   * OS info
-  ```bash
+  ```
   [root@centos7 ~]# uname -a ;cat /etc/redhat-release
   Linux centos7 3.10.0-514.6.2.el7.x86_64 #1 SMP Thu Feb 23 03:04:39 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
   CentOS Linux release 7.4.1708 (Core)
@@ -31,7 +31,7 @@
 
 * Install Packages
 
-  ```bash
+  ```
   sudo yum -y group install "Development Tools"                  # For unf Gem and noi4r Gem
   sudo yum -y install git-all                                    # Git and components
   sudo yum -y install memcached                                  # Memcached for the session store
@@ -49,7 +49,7 @@
 
 * Enable Memcached
 
-  ```bash
+  ```
   sudo systemctl start  memcached &&   sudo systemctl enable memcached
   ```
 
@@ -60,7 +60,7 @@
     * Or follow the directions [here](https://www.postgresql.org/download/linux/redhat/#yum)
       to install it from the PostgreSQL Global Development Group repositories.
 
-  ```bash
+  ```
 
   sudo postgresql-setup initdb
   sudo grep -q '^local\s' /var/opt/rh/rh-postgresql94/lib/pgsql/data/pg_hba.conf || echo "local all all trust" | sudo tee -a /var/opt/rh/rh-postgresql94/lib/pgsql/data/pg_hba.conf
@@ -75,7 +75,7 @@
 
 we see it is only avaible to from local host connection.
 
-```bash
+```
 [me@centos7 manageiq]$ sudo netstat -antulp |grep 5432
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
 tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN      23867/postgres
@@ -84,7 +84,7 @@ tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN      
 
 * Make postgres acept connection from all hosts.
 
-```bash
+```
 cd /var/opt/rh/rh-postgresql94/lib/pgsql/data/
 
 [root@centos7 data]# egrep -v '^#|^$'  pg_hba.conf                                          |
@@ -94,7 +94,7 @@ host    all             all             0.0.0.0/0               md5
 ```
 * Make postgres acept connection from all hosts
 
-```bash
+```
 cd /var/opt/rh/rh-postgresql94/lib/pgsql/data/
 egrep -v '^#|^$'  postgresql.conf | egrep '^listen_address'
 # we should see folloing
@@ -106,14 +106,14 @@ listen_addresses = '*'    # what IP address(es) to listen on;
 ### Install Ruby and Bundler
 
 * CentOS come with older version of ruby
-  ```bash
+  ```
   [root@centos7 ~]# rpm -q --whatprovides ruby
   ruby-2.0.0.648-33.el7_4.x86_64
   [root@centos7 ~]#
   ```
 
 * Remove older version of ruby
-  ```bash
+  ```
   [root@centos7 ~]# yum remove -y ruby-\* rubygem* && rpm -qa |grep ruby
   Loaded plugins: fastestmirror
   No Match for argument: ruby-*
@@ -123,7 +123,7 @@ listen_addresses = '*'    # what IP address(es) to listen on;
   ```
 * Install a newer version ruby from SCL
 
-```bash
+```
 yum --enablerepo=centos-sclo-rh -y install rh-ruby24\*
 scl enable rh-ruby24 bash
 [root@centos7 ~]# ruby --version
@@ -140,7 +140,7 @@ export X_SCLS="`scl enable rh-ruby24 'echo $X_SCLS'`"
 
 * build and install pg gem with ruby 2.4 and /opt/rh/rh-postgresql94 from SCL
 
-```bash
+```
 gem install pg -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_config
 ```
 * Use a Ruby version manager (choose one)
@@ -171,7 +171,7 @@ gem install pg -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_confi
 
 * Git configuration and default settings.
 
-  ```bash
+  ```
   git config --global user.name "Joe Smith"
   git config --global user.email joe.smith@example.com
   git config --global --bool pull.rebase true
@@ -180,14 +180,14 @@ gem install pg -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_confi
 
   If you need to use git with other email addresses, you can set the local user.email from within the clone using:
 
-  ```bash
+  ```
   git config user.name "Joe Smith"
   git config user.email joe.smith@example.com
   ```
 
 ### Clone the Code using git protocol if you are in manageiq team
 
-```bash
+```
 git clone git@github.com:JoeSmith/manageiq.git # Use "-o my_fork" if you don't want the remote to be named origin
 cd manageiq
 git remote add upstream git@github.com:ManageIQ/manageiq.git
@@ -197,7 +197,7 @@ git fetch upstream
 
 ### Clone the Code in https readonly mode
 
-```bash
+```
 git clone git@github.com:LearningManageIQ/manageiq.git # Use "-o my_fork" if you don't want the remote to be named origin
 cd  cd manageiq
 git remote add upstream https://github.com/ManageIQ/manageiq.git
@@ -206,7 +206,7 @@ git fetch upstream
 
 You can add other remotes at any time to collaborate with others by running:
 
-```bash
+```
 git remote add other_user git@github.com:OtherUser/manageiq.git
 git fetch other_user
 ```
@@ -221,14 +221,14 @@ git fetch other_user
   [you can configure npm to install packages globally for a given user](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md).
 
 * make sure your account can sudo without password
-  ```bash
+  ```
   /etc/group
   /etc/sudoer
   adm 
   ```
 * Install the _Bower_ package manager
 
-  ```bash
+  ```
   sudo npm install -g bower
   ```
 
@@ -236,19 +236,19 @@ git fetch other_user
 
   Follow [official instructions](https://yarnpkg.com/lang/en/docs/install/#linux-tab) or
 
-  ```bash
+  ```
   sudo npm install -g yarn
   ```
 
 * Install the _Gulp_ and _Webpack_ build system
 
-  ```bash
+  ```
   sudo npm install -g gulp-cli &&  sudo npm install -g webpack
   ```
 
 ### Get the Rails environment up and running
 
-```bash
+```
 bin/setup                  # Installs dependencies, config, prepares database, etc
 gem install pg -v '0.18.4' -- --with-pg-config=/opt/rh/rh-postgresql94/root/usr/bin/pg_config
 bundle install 
@@ -266,7 +266,7 @@ targeted end-user testing. See the [minimal mode guide](developer_setup/minimal_
 
 * You can update ruby and javascript dependencies as well as run migrations using one command
 
-```bash
+```
 bin/update                # Updates dependencies using bundler and bower, runs migrations, prepares test db.
 ```
 
