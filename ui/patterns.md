@@ -19,8 +19,12 @@ quick start for new contributors for the UI.
 * [Remote Consoles](remote_consoles.md)
 * [Angular Components](angular_components.md)
 * [Calling the API](calling_api.md) -- how to call the API from the client-side.
-* [Forms](forms.md) -- all the stages of forms, from pure rails to Angular
+* [Forms](forms.md) -- on writing UI forms
 * [Redux](redux.md) -- how to write reducers for redux, how to structure them and how to dispatch actions.
+* [Extending the UI from Provider Repositories](provider_plugin.md) -- how provider authors can extend the UI with buttons, dialogs and execute Ansible playbooks.
+* [Dialog Editor](dialog_editor.md) -- components and workflow of Angular dialog editor.
+* [Breadcrumbs](https://github.com/ManageIQ/manageiq-ui-classic/wiki/Breadcrumbs) -- how breadcrumbs work
+
 
 To write new Javascript components for ManageIQ e.g. in Typescript and Angular, please, read
 * [UI Components Readme](https://github.com/ManageIQ/ui-components/blob/master/README.md)
